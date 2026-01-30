@@ -1,18 +1,15 @@
 <script lang="ts">
-	import type { PageProps } from './$types';
+	import { goto } from '$app/navigation';
+	import kittyGif from '$lib/assets/kitty.gif';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import kittyGif from '$lib/assets/kitty.gif';
-	import { fly } from 'svelte/transition';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { ArrowRight } from '@lucide/svelte';
-	import { goto } from '$app/navigation';
-	import { useOnboardMutation } from '$lib/hooks/useOnboardMutation';
 	import { Spinner } from '$lib/components/ui/spinner/index.js';
+	import { useOnboardMutation } from '$lib/hooks/useOnboardMutation';
+	import { ArrowRight } from '@lucide/svelte';
 	import { toast } from 'svelte-sonner';
-
-	let { data }: PageProps = $props();
+	import { fly } from 'svelte/transition';
 
 	const { mutateAsync: onboard, isPending } = useOnboardMutation();
 
@@ -42,7 +39,7 @@
 </script>
 
 <div class="grid-bg fixed inset-0 -z-20"></div>
-<section class="relative flex h-[90vh] flex-col items-center justify-center">
+<section class="relative flex h-[95vh] md:h-[90vh] flex-col items-center justify-center">
 	<Card.Root class="shadow-none">
 		<div in:fly={{ x: -50, duration: 500 }}>
 			<h1 class="text-center text-xl font-semibold">🫷 One more thing... 🫸</h1>

@@ -14,6 +14,8 @@ type GetPlaylistsParams = {
 	sortBy?: 'latest' | 'popular';
 };
 
+export type PlaylistWithUsername = Playlist & { username: string | null };
+
 export async function getPlaylists(params: GetPlaylistsParams) {
 	const { limit, offset, userId, search, genres, platforms, sortBy } = params;
 
@@ -66,30 +68,45 @@ export async function getPlaylists(params: GetPlaylistsParams) {
 		orderBy = [desc(playlists.createdAt)];
 	}
 
-	const [playlistsData, userLikedLikes, [totalLikes]] = await Promise.all([
+	const [playlistsRaw, userLikedLikes, [totalLikes]] = await Promise.all([
 		db
-			.select()
+			.select({ playlist: playlists, username: users.username })
 			.from(playlists)
+			.leftJoin(users, eq(playlists.userId, users.id))
 			.where(whereConditions)
 			.orderBy(...orderBy)
 			.limit(limit ?? DEFAULT_LIMIT)
 			.offset(offset ?? 0),
 		userId
 			? db
-				.select({ playlistId: playlistLikes.playlistId })
-				.from(playlistLikes)
-				.where(eq(playlistLikes.userId, userId))
+					.select({ playlistId: playlistLikes.playlistId })
+					.from(playlistLikes)
+					.where(eq(playlistLikes.userId, userId))
 			: Promise.resolve([]),
 		db.select({ count: count() }).from(playlistLikes)
 	]);
 
+	const playlistsData = playlistsRaw.map(({ playlist, username }) => ({ ...playlist, username }));
+
 	const userLikedPlaylistsIds = userLikedLikes.map((like) => like.playlistId);
 
-	return { playlists: playlistsData, userLikedPlaylistsIds, totalLikes: totalLikes.count };
+	return {
+		playlists: playlistsData as PlaylistWithUsername[],
+		userLikedPlaylistsIds,
+		totalLikes: totalLikes.count
+	};
 }
 
 export async function getUserPlaylists(userId: string) {
-	return await db.select().from(playlists).where(eq(playlists.userId, userId));
+	const data = await db
+		.select({ playlist: playlists, username: users.username })
+		.from(playlists)
+		.leftJoin(users, eq(playlists.userId, users.id))
+		.where(eq(playlists.userId, userId));
+	return data.map(({ playlist, username }) => ({
+		...playlist,
+		username
+	})) as PlaylistWithUsername[];
 }
 
 export async function getUserLikedPlaylists(userId: string) {
@@ -105,7 +122,15 @@ export async function getUserLikedPlaylistsData(userId: string) {
 	if (likedPlaylistIds.length === 0) {
 		return [];
 	}
-	return await db.select().from(playlists).where(inArray(playlists.id, likedPlaylistIds));
+	const data = await db
+		.select({ playlist: playlists, username: users.username })
+		.from(playlists)
+		.leftJoin(users, eq(playlists.userId, users.id))
+		.where(inArray(playlists.id, likedPlaylistIds));
+	return data.map(({ playlist, username }) => ({
+		...playlist,
+		username
+	})) as PlaylistWithUsername[];
 }
 
 export async function getUserLikedPlaylistsCount(userId: string) {
@@ -183,16 +208,15 @@ export async function toggleLike({
 }
 
 export async function checkIsOnboarded(userId: string) {
-	const [{ username }] = await db.select({ username: users.username }).from(users).where(eq(users.id, userId));
+	const [{ username }] = await db
+		.select({ username: users.username })
+		.from(users)
+		.where(eq(users.id, userId));
 	return !!username;
 }
 
 export async function updateUser({ userId, username }: { userId: string; username: string }) {
-	const result = await db
-		.update(users)
-		.set({ username })
-		.where(eq(users.id, userId))
-		.returning();
+	const result = await db.update(users).set({ username }).where(eq(users.id, userId)).returning();
 	if (result.length === 0) {
 		throw new Error('User not found');
 	}

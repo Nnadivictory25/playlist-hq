@@ -1,6 +1,6 @@
 <script lang="ts">
 	import './layout.css';
-	import logo from '$lib/assets/playlisthub-logo.png';
+	import logo from '$lib/assets/playlist-hq-logo.png';
 	import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit';
 	import '@fontsource-variable/rubik';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
@@ -18,7 +18,7 @@
 	});
 
 	let { data, children }: LayoutProps = $props();
-	const title = 'PlaylistHub - Discover and share your favorite playlists';
+	const title = 'PlaylistHQ - Discover and share your favorite playlists';
 	const description =
 		'Explore new music, get inspired by others, and add your own playlists to the community.';
 </script>
@@ -29,14 +29,16 @@
 	<meta name="description" content={description} />
 	<meta property="og:title" content={title} />
 	<meta property="og:description" content={description} />
-	<meta property="og:image" content="https://playlisthub.online/og.png" />
-	<meta property="og:url" content="https://playlisthub.online" />
 	<meta property="og:type" content="website" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
-	<meta name="twitter:image" content="https://playlisthub.online/og.png" />
-	<link rel="canonical" href="https://playlisthub.online" />
+	<meta name="twitter:image" content="https://playlisthq.online/og.png" />
+	<link rel="canonical" href="https://playlisthq.online" />
+	<meta property="og:image" content="https://playlisthq.online/og.png" />
+	<meta property="og:url" content="https://playlisthq.online" />
+	<meta name="twitter:image" content="https://playlisthq.online/og.png" />
+	<link rel="canonical" href="https://playlisthq.online" />
 
 	<script type="text/javascript">
 		(function (c, l, a, r, i, t, y) {

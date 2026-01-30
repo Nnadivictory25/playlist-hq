@@ -19,7 +19,7 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 			platform: 'spotify',
 			genre: JSON.stringify(['Afrobeat', 'World']),
 			url: 'https://spotify.com/playlist/1',
-			user_id: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67'
+			user_id: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs'
 		},
 		{
 			name: 'Rock Classics',
@@ -30,7 +30,7 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 			platform: 'youtube music',
 			genre: JSON.stringify(['Rock']),
 			url: 'https://youtube.com/playlist/2',
-			user_id: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67'
+			user_id: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs'
 		},
 		{
 			name: 'Jazz Lounge',
@@ -41,7 +41,7 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 			platform: 'apple music',
 			genre: JSON.stringify(['Jazz']),
 			url: 'https://music.apple.com/playlist/3',
-			user_id: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67'
+			user_id: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs'
 		},
 		{
 			name: 'Pop Hits 2023',
@@ -52,7 +52,7 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 			platform: 'spotify',
 			genre: JSON.stringify(['Pop', 'Dance']),
 			url: 'https://spotify.com/playlist/4',
-			user_id: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67'
+			user_id: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs'
 		},
 		{
 			name: 'Hip-Hop Essentials',
@@ -62,7 +62,7 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 			platform: 'youtube music',
 			genre: JSON.stringify(['Hip-Hop', 'Rap']),
 			url: 'https://youtube.com/playlist/5',
-			user_id: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67'
+			user_id: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs'
 		},
 		{
 			name: 'Country Roads',
@@ -73,7 +73,7 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 			platform: 'apple music',
 			genre: JSON.stringify(['Country', 'Folk']),
 			url: 'https://music.apple.com/playlist/6',
-			user_id: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67'
+			user_id: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs'
 		},
 		{
 			name: 'Electronic Beats',
@@ -83,7 +83,7 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 			platform: 'spotify',
 			genre: JSON.stringify(['Electronic', 'Techno']),
 			url: 'https://spotify.com/playlist/7',
-			user_id: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67'
+			user_id: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs'
 		},
 		{
 			name: 'Blues Legends',
@@ -94,7 +94,7 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 			platform: 'youtube music',
 			genre: JSON.stringify(['Blues', 'Rock']),
 			url: 'https://youtube.com/playlist/8',
-			user_id: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67'
+			user_id: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs'
 		},
 		{
 			name: 'Reggae Rhythms',
@@ -104,7 +104,7 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 			platform: 'apple music',
 			genre: JSON.stringify(['Reggae', 'World']),
 			url: 'https://music.apple.com/playlist/9',
-			user_id: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67'
+			user_id: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs'
 		},
 		{
 			name: 'Indie Discoveries',
@@ -114,7 +114,7 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 			platform: 'spotify',
 			genre: JSON.stringify(['Indie', 'Alternative']),
 			url: 'https://spotify.com/playlist/10',
-			user_id: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67'
+			user_id: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs'
 		}
 	];
 
@@ -138,9 +138,9 @@ if (process.argv[1] === import.meta.path || process.argv[1] === new URL(import.m
 
 	// Insert dummy likes (e.g., user likes some playlists)
 	const likes = [
-		{ playlistId: playlistIds[0], userId: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67' },
-		{ playlistId: playlistIds[1], userId: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67' },
-		{ playlistId: playlistIds[3], userId: 'kkB0AIR8E89wC3336AiCNriUlSIqnW67' }
+		{ playlistId: playlistIds[0], userId: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs' },
+		{ playlistId: playlistIds[1], userId: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs' },
+		{ playlistId: playlistIds[3], userId: 'pzWcOBdUPKoXHC4kXhWT03SPUZMh5Ygs' }
 	];
 
 	for (const like of likes) {

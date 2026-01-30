@@ -33,7 +33,7 @@
 </script>
 
 <svelte:head>
-	<title>Dashboard - PlaylistHub</title>
+	<title>Dashboard - PlaylistHQ</title>
 </svelte:head>
 
 <section class="pt-20">

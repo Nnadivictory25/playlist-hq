@@ -32,7 +32,7 @@
 </script>
 
 <svelte:head>
-	<title>Playlists - PlaylistHub</title>
+	<title>Playlists - PlaylistHQ</title>
 </svelte:head>
 
 <section class="pt-20">

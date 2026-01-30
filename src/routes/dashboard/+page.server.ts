@@ -13,7 +13,6 @@ export const load = (async ({ locals }) => {
 		redirect(302, '/sign-in');
 	}
 
-	// Fetch all data concurrently - username is now included in session automatically!
 	const [userPlaylists, userLikedPlaylistsIds, likedPlaylistsData, likedCount] = await Promise.all([
 		getUserPlaylists(user.id),
 		getUserLikedPlaylists(user.id),

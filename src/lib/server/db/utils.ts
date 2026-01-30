@@ -2,7 +2,7 @@ import { DEFAULT_LIMIT } from '$lib/app-utils';
 import type { Genre } from '$lib/filters';
 import { and, count, desc, eq, inArray, like, or, sql } from 'drizzle-orm';
 import { db } from '.';
-import { playlistLikes, playlists, type NewPlaylist, type Playlist } from './schema';
+import { playlistLikes, playlists, type NewPlaylist, type Playlist, users } from './schema';
 
 type GetPlaylistsParams = {
 	userId?: string;
@@ -180,4 +180,21 @@ export async function toggleLike({
 		await db.insert(playlistLikes).values({ playlistId, userId });
 		return 'liked';
 	}
+}
+
+export async function checkIsOnboarded(userId: string) {
+	const [{ username }] = await db.select({ username: users.username }).from(users).where(eq(users.id, userId));
+	return !!username;
+}
+
+export async function updateUser({ userId, username }: { userId: string; username: string }) {
+	const result = await db
+		.update(users)
+		.set({ username })
+		.where(eq(users.id, userId))
+		.returning();
+	if (result.length === 0) {
+		throw new Error('User not found');
+	}
+	return result[0];
 }

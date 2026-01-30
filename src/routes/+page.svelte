@@ -87,25 +87,4 @@
 	.floating-3 {
 		animation: float 3s ease-in-out infinite 1s;
 	}
-
-	.grid-bg {
-		background:
-			linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-		background-size:
-			70px 70px,
-			70px 70px;
-	}
-
-	.grid-bg::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(
-			135deg,
-			color-mix(in oklch, var(--primary), transparent 78%) 0%,
-			transparent 50%
-		);
-		filter: blur(0px);
-	}
 </style>

@@ -6,9 +6,6 @@ import {
 	getUserLikedPlaylistsCount,
 	getUserLikedPlaylistsData
 } from '$lib/server/db/utils';
-import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
 
 export const load = (async ({ locals }) => {
 	const user = locals.user;
@@ -16,20 +13,13 @@ export const load = (async ({ locals }) => {
 		redirect(302, '/sign-in');
 	}
 
-	// Fetch all data concurrently including username
-	const [[userData], userPlaylists, userLikedPlaylistsIds, likedPlaylistsData, likedCount] =
-		await Promise.all([
-			db.select({ username: users.username }).from(users).where(eq(users.id, user.id)),
-			getUserPlaylists(user.id),
-			getUserLikedPlaylists(user.id),
-			getUserLikedPlaylistsData(user.id),
-			getUserLikedPlaylistsCount(user.id)
-		]);
-
-	const userWithUsername = {
-		...user,
-		username: userData?.username || undefined
-	};
+	// Fetch all data concurrently - username is now included in session automatically!
+	const [userPlaylists, userLikedPlaylistsIds, likedPlaylistsData, likedCount] = await Promise.all([
+		getUserPlaylists(user.id),
+		getUserLikedPlaylists(user.id),
+		getUserLikedPlaylistsData(user.id),
+		getUserLikedPlaylistsCount(user.id)
+	]);
 
 	const uploadedCount = userPlaylists.length;
 
@@ -41,6 +31,6 @@ export const load = (async ({ locals }) => {
 			uploadedCount,
 			likedCount
 		},
-		user: userWithUsername
+		user
 	};
 }) satisfies PageServerLoad;

@@ -228,3 +228,46 @@ export function getPlaylistIdFromUrl({ url, platform }: { url: string; platform:
 			return url.split('/').pop();
 	}
 }
+
+/**
+ * Validates a username according to platform rules
+ * @param username - The username to validate
+ * @returns Object with isValid flag and optional error message
+ */
+export function validateUsername(username: string): { isValid: boolean; error?: string } {
+	const trimmed = username.trim();
+
+	if (!trimmed) {
+		return { isValid: false, error: 'Username cannot be empty' };
+	}
+
+	if (trimmed.length < 3) {
+		return { isValid: false, error: 'Username must be at least 3 characters' };
+	}
+
+	if (trimmed.length > 15) {
+		return { isValid: false, error: 'Username must be at most 15 characters' };
+	}
+
+	// Check for valid characters (alphanumeric, underscore, hyphen)
+	if (!/^[a-zA-Z0-9_-]+$/.test(trimmed)) {
+		return {
+			isValid: false,
+			error: 'Username can only contain letters, numbers, underscores, and hyphens'
+		};
+	}
+
+	return { isValid: true };
+}
+
+/**
+ * Extracts username from user object, returning a formatted string or null
+ * @param user - User object that may contain username
+ * @returns Formatted username with @ prefix, or null if not set
+ */
+export function formatUsername(user: { username?: string | null }): string | null {
+	if (!user.username) {
+		return null;
+	}
+	return `@${user.username}`;
+}

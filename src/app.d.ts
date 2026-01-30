@@ -7,7 +7,7 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			session?: Session;
-			user?: User;
+			user?: User & { username?: string };
 		}
 		// interface PageData {}
 		// interface PageState {}

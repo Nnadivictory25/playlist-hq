@@ -5,7 +5,7 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import type { Platform } from '$lib/filters';
 	import { useMutateLike } from '$lib/hooks/useMutateLike';
-	import type { Playlist } from '$lib/server/db/schema';
+	import type { PlaylistWithUsername } from '$lib/server/db/utils';
 	import { ArrowUpRightIcon, Clock, Music } from '@lucide/svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { toast } from 'svelte-sonner';
@@ -17,7 +17,7 @@
 	const MAX_GENRES = 4;
 
 	type PlaylistCardProps = {
-		playlist: Playlist;
+		playlist: PlaylistWithUsername;
 		userId: string;
 		isLiked: boolean;
 	};
@@ -128,10 +128,13 @@
 							<p class="font-medium">{playlist.songCount} songs</p>
 						</div>
 
-						<p class="flex items-center gap-1 text-xs text-gray-500">
-							<Clock size={15} />
-							{formatTime(new Date(playlist.createdAt))}
-						</p>
+						<div class="flex items-center gap-[2px] text-xs">
+							{#if playlist.username}
+								<span class="font-medium text-gray-600">@{playlist.username}</span>
+								<span class="text-gray-400">•</span>
+							{/if}
+							<span class="text-gray-500">{formatTime(new Date(playlist.createdAt))}</span>
+						</div>
 					</div>
 
 					<!-- Bottom Row -->

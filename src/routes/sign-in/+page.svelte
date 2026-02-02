@@ -1,9 +1,8 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card/index.js';
-	import type { PageProps } from './$types';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { ArrowRight } from '@lucide/svelte';
+	import * as Card from '$lib/components/ui/card/index.js';
 	import { authClient } from '@/lib/auth-client';
+	import { ArrowRight } from '@lucide/svelte';
 	import { toast } from 'svelte-sonner';
 
 	let isLoading = $state(false);
@@ -13,7 +12,7 @@
 		authClient.signIn
 			.social({
 				provider: 'google',
-				callbackURL: '/playlists'
+				callbackURL: '/onboard'
 			})
 			.catch((error) => {
 				toast.error(error.message);

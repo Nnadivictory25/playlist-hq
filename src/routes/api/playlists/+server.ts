@@ -1,4 +1,4 @@
-import type { RequestHandler } from '../$types';
+import type { RequestHandler } from './$types';
 import { getQueryParams } from '$lib/app-utils';
 import { getPlaylists } from '$lib/server/db/utils';
 import { json } from '@sveltejs/kit';

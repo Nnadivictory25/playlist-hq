@@ -1,9 +1,9 @@
-# PlaylistHub - Share and discover music playlists by others 🎵
+# PlaylistHQ - Share and discover music playlists by others 🎵
 
-PlaylistHub is a platform to discover music playlists by others and also share yours !
+PlaylistHQ is a platform to discover music playlists by others and also share yours !
 Built this for my fellow music lovers who might be interested in discovering what others are listening across platforms (Apple Music, Spotify and YouTube Music)
 
-🌐 **Live Site:** [playlisthub.online](https://playlisthub.online)
+🌐 **Live Site:** [playlisthq.online](https://playlisthq.online)
 
 **Platforms Supported**
 
@@ -43,7 +43,7 @@ Built this for my fellow music lovers who might be interested in discovering wha
 
 ## Homepage
 
-![Homepage](demo-imgs/playlisthub-homepage.png)
+![Homepage](demo-imgs/playlist-hq-homepage.png)
 
 ## Playlists View
 

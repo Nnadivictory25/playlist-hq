@@ -1,5 +1,5 @@
 import type { Session, User } from 'better-auth';
-import type { Playlist } from '$lib/server/db/schema';
+import type { PlaylistWithUsername } from '$lib/server/db/utils';
 import type { Genre, Platform } from '$lib/filters';
 
 declare global {
@@ -7,7 +7,7 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			session?: Session;
-			user?: User;
+			user?: User & { username?: string | null };
 		}
 		// interface PageData {}
 		// interface PageState {}
@@ -15,14 +15,14 @@ declare global {
 	}
 
 	type GetPlaylistsResult = {
-		playlists: Playlist[];
+		playlists: PlaylistWithUsername[];
 		userLikedPlaylistsIds: number[];
 		totalLikes?: number;
 	};
 
 	type GetUserDashboardResult = {
-		userPlaylists: Playlist[];
-		likedPlaylists: Playlist[];
+		userPlaylists: PlaylistWithUsername[];
+		likedPlaylists: PlaylistWithUsername[];
 		userLikedPlaylistsIds: number[];
 		uploadedCount: number;
 		likedCount: number;

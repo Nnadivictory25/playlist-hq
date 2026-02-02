@@ -7,7 +7,7 @@
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import { parseAsString } from 'nuqs-svelte';
 	import { useQueryState } from 'nuqs-svelte';
-	import Logout from '$lib/components/logout.svelte';
+	import ProfileMenu from '$lib/components/profile-menu.svelte';
 
 	let { data }: PageProps = $props();
 
@@ -33,7 +33,7 @@
 </script>
 
 <svelte:head>
-	<title>Dashboard - PlaylistHub</title>
+	<title>Dashboard - PlaylistHQ</title>
 </svelte:head>
 
 <section class="pt-20">
@@ -43,13 +43,13 @@
 			<p class="text-sm text-gray-500">View your uploaded playlists.</p>
 		</div>
 		<div class="md:hidden">
-			<Logout />
+			<ProfileMenu {user} />
 		</div>
 
 		<div class="flex items-center gap-2">
 			<UploadPlaylist />
 			<div class="hidden md:block">
-				<Logout />
+				<ProfileMenu {user} />
 			</div>
 		</div>
 	</div>

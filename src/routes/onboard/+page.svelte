@@ -7,25 +7,48 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Spinner } from '$lib/components/ui/spinner/index.js';
 	import { useOnboardMutation } from '$lib/hooks/useOnboardMutation';
-	import { ArrowRight } from '@lucide/svelte';
+	import { useUsernameAvailability } from '$lib/hooks/useUsernameAvailability';
+	import { ArrowRight, Check, X } from '@lucide/svelte';
 	import { toast } from 'svelte-sonner';
 	import { fly } from 'svelte/transition';
 
 	const { mutateAsync: onboard, isPending } = useOnboardMutation();
 
 	let username = $state('');
+	let debouncedUsername = $state('');
+	let debounceTimeout: ReturnType<typeof setTimeout>;
+
+	const usernameQuery = useUsernameAvailability(() => debouncedUsername);
+
+	const isValidLength = $derived(username.trim().length >= 3 && username.trim().length <= 15);
+	const status = $derived(
+		!isValidLength
+			? 'idle'
+			: usernameQuery.isLoading
+				? 'checking'
+				: usernameQuery.data?.available
+					? 'available'
+					: 'taken'
+	);
+	const canSubmit = $derived(isValidLength && status === 'available');
+
+	function handleInput() {
+		clearTimeout(debounceTimeout);
+		debounceTimeout = setTimeout(() => {
+			debouncedUsername = username;
+		}, 300);
+	}
 
 	function handleSkip(e: MouseEvent) {
 		e.preventDefault();
 		goto('/playlists');
 	}
 
-	const isValidUsername = $derived(username.trim().length >= 3 && username.trim().length <= 15);
-
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
-		if (!isValidUsername) {
-			toast.error('Username must be between 3 and 15 characters');
+		if (!canSubmit) {
+			if (status === 'taken') toast.error('Username is already taken');
+			else toast.error('Username must be between 3 and 15 characters');
 			return;
 		}
 		try {
@@ -39,7 +62,7 @@
 </script>
 
 <div class="grid-bg fixed inset-0 -z-20"></div>
-<section class="relative flex h-[95vh] md:h-[90vh] flex-col items-center justify-center">
+<section class="relative flex h-[95vh] flex-col items-center justify-center md:h-[90vh]">
 	<Card.Root class="shadow-none">
 		<div in:fly={{ x: -50, duration: 500 }}>
 			<h1 class="text-center text-xl font-semibold">🫷 One more thing... 🫸</h1>
@@ -72,15 +95,33 @@
 					</button>
 				</div>
 				<Label for="username" class="text-left">Username</Label>
-				<Input
-					id="username"
-					type="text"
-					name="username"
-					placeholder="Enter your username"
-					bind:value={username}
-					disabled={isPending}
-				/>
-				<Button type="submit" class="w-full" disabled={isPending || !username.trim()}>
+				<div class="relative">
+					<Input
+						id="username"
+						type="text"
+						name="username"
+						placeholder="Enter your username"
+						bind:value={username}
+						oninput={handleInput}
+						disabled={isPending}
+						class={status === 'taken'
+							? 'border-red-500'
+							: status === 'available'
+								? 'border-green-500'
+								: ''}
+					/>
+					{#if status === 'checking'}
+						<Spinner size="sm" class="absolute top-1/2 right-3 -translate-y-1/2" />
+					{:else if status === 'available'}
+						<Check size={16} class="absolute top-1/2 right-3 -translate-y-1/2 text-green-500" />
+					{:else if status === 'taken'}
+						<X size={16} class="absolute top-1/2 right-3 -translate-y-1/2 text-red-500" />
+					{/if}
+				</div>
+				{#if status === 'taken'}
+					<p class="text-xs text-red-500">Username is already taken</p>
+				{/if}
+				<Button type="submit" class="w-full" disabled={isPending || !canSubmit}>
 					{#if isPending}
 						<Spinner size="sm" /> Updating...
 					{:else}

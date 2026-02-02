@@ -1,7 +1,17 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { updateUser } from '$lib/server/db/utils';
+import { isUsernameTaken, updateUser } from '$lib/server/db/utils';
 import { unauthorized } from '$lib/server/api-helpers';
+
+export const GET: RequestHandler = async ({ url, locals }) => {
+	const username = url.searchParams.get('username');
+	if (!username) {
+		return json({ success: false, error: 'Username parameter required' }, { status: 400 });
+	}
+
+	const taken = await isUsernameTaken(username, locals.user?.id);
+	return json({ available: !taken });
+};
 
 export const PUT: RequestHandler = async ({ request, locals }) => {
 	const { user } = locals;
@@ -30,4 +40,3 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 		);
 	}
 };
-

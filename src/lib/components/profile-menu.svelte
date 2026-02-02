@@ -11,11 +11,12 @@
 	import { buttonVariants } from './ui/button/index.js';
 	import { toast } from 'svelte-sonner';
 	import { goto, invalidateAll } from '$app/navigation';
-	import { User, LogOut, Pencil } from '@lucide/svelte';
+	import { User, LogOut, Pencil, Check, X } from '@lucide/svelte';
 	import { useQueryClient } from '@tanstack/svelte-query';
+	import { useUsernameAvailability } from '$lib/hooks/useUsernameAvailability';
 	import { validateUsername } from '$lib/app-utils';
 
-	let { user }: { user: { id: string; email: string; username?: string } } = $props();
+	let { user }: { user: { id: string; email: string; username?: string | null } } = $props();
 
 	const queryClient = useQueryClient();
 
@@ -24,15 +25,44 @@
 
 	// Edit profile dialog state
 	let editDialogOpen = $state(false);
-	let newUsername = $state('');
 	let isUpdating = $state(false);
+	let newUsername = $state('');
+	let debouncedUsername = $state('');
+	let debounceTimeout: ReturnType<typeof setTimeout>;
 
-	// Initialize newUsername when dialog opens
+	const usernameQuery = useUsernameAvailability(
+		() => debouncedUsername,
+		user.username ?? undefined
+	);
+
+	const isValidLength = $derived(newUsername.trim().length >= 3 && newUsername.trim().length <= 15);
+	const status = $derived(
+		!isValidLength
+			? 'idle'
+			: usernameQuery.isLoading
+				? 'checking'
+				: usernameQuery.data?.available
+					? 'available'
+					: 'taken'
+	);
+	const canSubmit = $derived(
+		isValidLength && status === 'available' && newUsername.trim() !== user.username
+	);
+
+	// Initialize when dialog opens
 	$effect(() => {
 		if (editDialogOpen) {
 			newUsername = user.username || '';
+			debouncedUsername = user.username || '';
 		}
 	});
+
+	function handleInput() {
+		clearTimeout(debounceTimeout);
+		debounceTimeout = setTimeout(() => {
+			debouncedUsername = newUsername;
+		}, 300);
+	}
 
 	// Logout dialog state
 	let logoutDialogOpen = $state(false);
@@ -44,6 +74,14 @@
 			toast.error(validation.error || 'Invalid username');
 			return;
 		}
+		if (status === 'taken') {
+			toast.error('Username is already taken');
+			return;
+		}
+		if (status === 'checking') {
+			toast.error('Please wait for username check to complete');
+			return;
+		}
 
 		isUpdating = true;
 		try {
@@ -52,19 +90,11 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ username: newUsername.trim() })
 			});
-
 			const json = await res.json();
-			if (!json.success) {
-				throw new Error(json.error || 'Failed to update username');
-			}
-
-			// Update local user data
+			if (!json.success) throw new Error(json.error || 'Failed to update username');
 			user.username = newUsername.trim();
-
-			// Invalidate dashboard queries to refresh playlists with new username
 			queryClient.invalidateQueries({ queryKey: ['user-dashboard'] });
 			queryClient.invalidateQueries({ queryKey: ['playlists'] });
-
 			toast.success('Username updated successfully!');
 			editDialogOpen = false;
 		} catch (error) {
@@ -149,7 +179,8 @@
 <Dialog.Root bind:open={editDialogOpen}>
 	<Dialog.Content class="sm:max-w-md">
 		<form
-			onsubmit={(e) => {
+			class="contents"
+			onsubmit={(e: Event) => {
 				e.preventDefault();
 				handleUpdateUsername();
 			}}
@@ -164,14 +195,33 @@
 			<div class="grid gap-4 py-4">
 				<div class="grid gap-2">
 					<Label for="username">Username</Label>
-					<Input
-						id="username"
-						type="text"
-						placeholder="Enter your username"
-						bind:value={newUsername}
-						disabled={isUpdating}
-					/>
-					<p class="text-xs text-muted-foreground">3-15 characters, no spaces</p>
+					<div class="relative">
+						<Input
+							id="username"
+							type="text"
+							placeholder="Enter your username"
+							bind:value={newUsername}
+							oninput={handleInput}
+							disabled={isUpdating}
+							class={status === 'taken'
+								? 'border-red-500'
+								: status === 'available'
+									? 'border-green-500'
+									: ''}
+						/>
+						{#if status === 'checking'}
+							<Spinner size="sm" class="absolute top-1/2 right-3 -translate-y-1/2" />
+						{:else if status === 'available'}
+							<Check size={16} class="absolute top-1/2 right-3 -translate-y-1/2 text-green-500" />
+						{:else if status === 'taken'}
+							<X size={16} class="absolute top-1/2 right-3 -translate-y-1/2 text-red-500" />
+						{/if}
+					</div>
+					{#if status === 'taken'}
+						<p class="text-xs text-red-500">Username is already taken</p>
+					{:else}
+						<p class="text-xs text-muted-foreground">3-15 characters, no spaces</p>
+					{/if}
 				</div>
 			</div>
 
@@ -184,7 +234,7 @@
 				>
 					Cancel
 				</Button>
-				<Button type="submit" disabled={isUpdating}>
+				<Button type="submit" disabled={isUpdating || status === 'taken' || status === 'checking'}>
 					{#if isUpdating}
 						<Spinner size="sm" />
 						Updating...

@@ -215,7 +215,23 @@ export async function checkIsOnboarded(userId: string) {
 	return !!username;
 }
 
+export async function isUsernameTaken(username: string, excludeUserId?: string) {
+	const existing = await db
+		.select({ id: users.id })
+		.from(users)
+		.where(eq(users.username, username));
+
+	if (existing.length === 0) return false;
+	if (excludeUserId && existing[0].id === excludeUserId) return false;
+	return true;
+}
+
 export async function updateUser({ userId, username }: { userId: string; username: string }) {
+	const taken = await isUsernameTaken(username, userId);
+	if (taken) {
+		throw new Error('Username is already taken');
+	}
+
 	const result = await db.update(users).set({ username }).where(eq(users.id, userId)).returning();
 	if (result.length === 0) {
 		throw new Error('User not found');
